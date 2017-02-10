@@ -1,4 +1,4 @@
-Answers
+#Answers
 
 1.What is the grep command?
 
@@ -9,7 +9,10 @@ Grep es un comando que busca un patrón de entrada dado en una lista de archivos
 Sirve para indicarle al comando find que si el archivo buscado es un directorio, que no busque recursivamente dentro.
 
 Ejemplo:
+
+```bash
 find . -name .snapshot -prune -o -name '*.foo' -print
+```
 
 En este caso si hay archivos con extensión foo en carpetas llamadas snapshot, no se buscara dentro de estos carpetas. Se utiliza name para mostrar en ambos pasos los patrones o nombres que se buscan, o en el caso de prune, los nombres de carpetas que no se deben entrar para buscar.[1]
  
@@ -41,15 +44,22 @@ Le permite saber al computador con que programa o interpretador de comandos corr
 
 Utilizando el comando, que me permite imprimir al terminal solo los nombres de usuarios:
 
+```bash
 awk -F':' '{ print $1}' /etc/passwd
+```
 
 Me aparecieron alrededor de 39 usuarios.
 
+```bash
 vision@ing-542:~$ awk -F':' '{ print $1}' /etc/passwd|wc -l
 39
+```
 
 Pero usando grep: 
+
+```bash
 grep -a "/bin/bash" /etc/passwd| wc -l
+```
 
 Solo aparecen 9 usuarios que usan /bin/bash [4]
 
@@ -57,7 +67,9 @@ Solo aparecen 9 usuarios que usan /bin/bash [4]
 
 Solo logre imprimir la lista de Usuarios y Shells, no ordenarla:
 
+```bash
 grep "/bin/" /etc/passwd | cut -d':' -f1,7
+```
 
 12. Create a script for finding duplicate images based on their content (tip: hash or checksum) You may look in the internet for ideas, Do not forget to include the source of any code you use. [5]
 
@@ -162,7 +174,7 @@ Me dieron 355 imágenes horizontales
 17. Crop all images to make them square (256x256).
 Lo hice con el siguiente script:
 
-
+```bash
 #! /bin/bash
 
 # encontrar todas las imagenes .jpg
@@ -178,7 +190,7 @@ convert $im -crop 256x256! $im
 echo $im has been cropped
 
 done
-
+```
 
 Referencias
 
