@@ -61,6 +61,7 @@ grep "/bin/" /etc/passwd | cut -d':' -f1,7
 
 12. Create a script for finding duplicate images based on their content (tip: hash or checksum) You may look in the internet for ideas, Do not forget to include the source of any code you use. [5]
 
+```bash
 #! /bin/bash
 
 # encontrar todas las imagenes .jpg
@@ -83,18 +84,23 @@ hashi=`identify -format "%#" $im`
 #almaceno el hash para futuras comparaciones
 hash=("${hash[@]}" $hashi
 done
+```
 
 14. What is the disk size of the uncompressed dataset, How many images are in the directory 'BSR/BSDS500/data/images'?
 
 Usando el comando du que sirve para conocer el uso del disco de archivos:
 
+```bash
 cristian@JaguarD:~/Descargas$ du -hs ./BSR/
 245M	./BSR/
+```
 
 Usando el comando find, que permite encontrar archivos, y la extension .jpg encontre que eran 512.
 
+```bash
 find . -name "*.jpg"|wc -l
 512
+```
 
 15. What is their resolution, what is their format?
 
@@ -102,6 +108,8 @@ La mayoria tienen una resolución de 72 ppp x 72 ppp, dos tienen de 180 x 180, p
 
 Utilice el siguiente script para ver todas las resoluciones y formatos:
 
+
+```bash
 #! /bin/bash
 
 # encontrar todas las imagenes .jpg
@@ -119,11 +127,12 @@ echo $formato
 echo $resi
 
 done
-
+```
 
 16. How many of them are in landscape orientation (opposed to portrait)?
 Utilizando el siguiente script:
 
+```bash
 #! /bin/bash
 
 # encontrar todas las imagenes .jpg
@@ -144,6 +153,8 @@ alto=`identify -format "%h" $im`
 done
 
 echo ${#portrait[@]}
+
+```
 
 Me dieron 355 imágenes horizontales
 
