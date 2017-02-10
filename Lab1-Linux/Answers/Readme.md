@@ -1,10 +1,10 @@
 #Answers
 
-1.What is the grep command?
+1) What is the grep command?
 
 Grep es un comando que busca un patrón de entrada dado en una lista de archivos o lineas, e imprime las lineas encontradas.
 
-2.What does the -prune option of find do? Give an example
+2) What does the -prune option of find do? Give an example
 
 Sirve para indicarle al comando find que si el archivo buscado es un directorio, que no busque recursivamente dentro.
 
@@ -16,31 +16,31 @@ find . -name .snapshot -prune -o -name '*.foo' -print
 
 En este caso si hay archivos con extensión foo en carpetas llamadas snapshot, no se buscara dentro de estos carpetas. Se utiliza name para mostrar en ambos pasos los patrones o nombres que se buscan, o en el caso de prune, los nombres de carpetas que no se deben entrar para buscar.[1]
  
-3. What does the cut command do?
+3) What does the cut command do?
 
 Busca secciones especificas de cada linea de un documento y las imprime en la terminal
 
-5. what does the diff command do?
+4) what does the diff command do?
 
 Compara documentos linea por linea para ver sus diferencias
 
-6. What does the tail command do?
+6) What does the tail command do?
 
 Imprime las ultimas 10 lineas de cada documento entrado como input
 
-7. What does the tail -f command do?
+7) What does the tail -f command do?
 
 Realiza la misma accion que tail, solo que ahora sigue los cambios del documento.
 
-8. What does the link command do?
+8) What does the link command do?
 
 Crea un enlace duro (hard link) entre dos archivos, lo que hace que tengan un mismo nodo de indexación. [2]
 
-9. What is the meaning of #! /bin/bash at the start of scripts?
+9) What is the meaning of #! /bin/bash at the start of scripts?
 
 Le permite saber al computador con que programa o interpretador de comandos correr el script. En este caso particular, significa que el script debe ser corrido por el bash Shell. [3]
 
-10. How many users exist in the course server?
+10) How many users exist in the course server?
 
 Utilizando el comando, que me permite imprimir al terminal solo los nombres de usuarios:
 
@@ -63,7 +63,7 @@ grep -a "/bin/bash" /etc/passwd| wc -l
 
 Solo aparecen 9 usuarios que usan /bin/bash [4]
 
-11. What command will produce a table of Users and Shells sorted by shell (tip: using cut and sort)
+11) What command will produce a table of Users and Shells sorted by shell (tip: using cut and sort)
 
 Solo logre imprimir la lista de Usuarios y Shells, no ordenarla:
 
@@ -71,7 +71,7 @@ Solo logre imprimir la lista de Usuarios y Shells, no ordenarla:
 grep "/bin/" /etc/passwd | cut -d':' -f1,7
 ```
 
-12. Create a script for finding duplicate images based on their content (tip: hash or checksum) You may look in the internet for ideas, Do not forget to include the source of any code you use. [5]
+12) Create a script for finding duplicate images based on their content (tip: hash or checksum) You may look in the internet for ideas, Do not forget to include the source of any code you use. [5]
 
 ```bash
 #! /bin/bash
@@ -98,7 +98,7 @@ hash=("${hash[@]}" $hashi
 done
 ```
 
-14. What is the disk size of the uncompressed dataset, How many images are in the directory 'BSR/BSDS500/data/images'?
+13) What is the disk size of the uncompressed dataset, How many images are in the directory 'BSR/BSDS500/data/images'?
 
 Usando el comando du que sirve para conocer el uso del disco de archivos:
 
@@ -114,7 +114,7 @@ find . -name "*.jpg"|wc -l
 512
 ```
 
-15. What is their resolution, what is their format?
+14) What is their resolution, what is their format?
 
 La mayoria tienen una resolución de 72 ppp x 72 ppp, dos tienen de 180 x 180, pero todas las imágenes están con el formato JPEG.
 
@@ -141,7 +141,7 @@ echo $resi
 done
 ```
 
-16. How many of them are in landscape orientation (opposed to portrait)?
+16) How many of them are in landscape orientation (opposed to portrait)?
 Utilizando el siguiente script:
 
 ```bash
@@ -171,7 +171,7 @@ echo ${#portrait[@]}
 Me dieron 355 imágenes horizontales
 
 
-17. Crop all images to make them square (256x256).
+17) Crop all images to make them square (256x256).
 Lo hice con el siguiente script:
 
 ```bash
