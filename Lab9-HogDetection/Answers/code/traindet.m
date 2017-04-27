@@ -1,17 +1,20 @@
+%Basado en el metodo Object category detection del Oxford Visual Geometry Group 
+%Autoria de Andrea Vedaldi y Andrew Zisserman.
+
 clc;
 clear all;
 setup ;
 
-%Basado en el metodo Object category detection del Oxford Visual Geometry Group 
-%Autoria de Andrea Vedaldi y Andrew Zisserman.
+%%
+
 
 % Training cofiguration
 targetClass = 1 ;
-numHardNegativeMiningIterations = 1 ;
+numHardNegativeMiningIterations = 5 ;
 schedule = [1 2 5 5 5] ;
 
 % Scale space configuration
-hogCellSize = 8 ;
+hogCellSize = 7 ;
 minScale = -1 ;
 maxScale = 3 ;
 numOctaveSubdivisions = 3 ;
@@ -34,36 +37,23 @@ load('faces.mat');
 % -------------------------------------------------------------------------
 % Step 5.1: Construct custom training data
 % -------------------------------------------------------------------------
-
-
+% if(exist('train.mat','file')==0)
     % Load object examples
-    trainImages = {} ;
+    trainImages = negatives ;
     trainBoxes = [] ;
     trainBoxPatches = {} ;
     trainBoxImages = {} ;
     trainBoxLabels = [] ;
     
     % Construct negative data
-    names = {};
-    j=1;
-    k=1;
-    
-    for i=1:numel(train)
-        if(isempty(boxes{i}))
-            trainImages{k}=train{i};
-            k=k+1;
-        else
-            t = imread(train{i}) ;
-            t = im2single(t) ;
-            boxi=boxes{i}';
-            tmp = imcrop(t, [boxi(1) boxi(2) boxi(3)-boxi(1) boxi(4)-boxi(2)]);
-            tmp = imresize(tmp, [80 80]) ;
-            trainBoxes(:,j) = boxi ;
-            trainBoxPatches{j} = tmp ;
-            trainBoxImages{j} = train{i} ;
-            trainBoxLabels(j) = 1 ;
-            j=j+1;
-        end
+    for i=1:numel(traincrop)
+        t = imread(traincrop{i}) ;
+        t = im2single(t) ;
+        t = imresize(t, [80 80]) ;
+        trainBoxes(:,i) = [0.5 ; 0.5 ; 80.5 ; 80.5] ;
+        trainBoxPatches{i} = t ;
+        trainBoxImages{i} = traincrop{i} ;
+        trainBoxLabels(i) = 1 ;
     end
     
     trainBoxPatches = cat(4, trainBoxPatches{:}) ;
@@ -76,29 +66,12 @@ load('faces.mat');
     trainBoxHog = cat(4, trainBoxHog{:}) ;
     modelWidth = size(trainBoxHog,2) ;
     modelHeight = size(trainBoxHog,1) ;
-    
-    save('train.mat','trainBoxImages','modelWidth','modelHeight','trainBoxHog','trainBoxPatches','trainBoxes','trainBoxLabels','trainImages','-v7.3');
+    display('Loading data: Done');
+    save('train.mat','-v7.3');
+    display('Saving data: Done');
+
 
 %%
-
-% -------------------------------------------------------------------------
-% Step 5.2: Visualize the training images
-% -------------------------------------------------------------------------
-
-figure(1) ; clf ;
-
-subplot(1,2,1) ;
-imagesc(vl_imarraysc(trainBoxPatches)) ;
-axis off ;
-title('Training images (positive samples)') ;
-axis equal ;
-
-subplot(1,2,2) ;
-imagesc(mean(trainBoxPatches,4)) ;
-box off ;
-title('Average') ;
-axis equal ;
-
 % -------------------------------------------------------------------------
 % Step 5.3: Train with hard negative mining
 % -------------------------------------------------------------------------
@@ -161,6 +134,7 @@ end
 if(exist('det.mat','file')==0)
     detecttest=cell(size(test));
     scorestest=cell(size(test));
+    count=0;
     for i=1:numel(test)
         im = imread(test{i}) ;
         im = im2single(im) ;
@@ -172,11 +146,31 @@ if(exist('det.mat','file')==0)
         scores = scores(keep(1:10)) ;
         detecttest{i}=detections;
         scorestest{i}=scores;
-        display(i/numel(test));
+        display(num2str(100*i/numel(test),'%.2f'));
+        count=i;
+         save('det.mat','scorestest','detecttest','count','-v7.3');
     end
-    save('det.mat','scorestest','detecttest','-v7.3');
+   
 else
     load('det.mat');
+    if(count<numel(test))
+        i2=count;
+        for i=i2:numel(test)
+            im = imread(test{i}) ;
+            im = im2single(im) ;
+            
+            % Compute detections
+            [detections, scores] = detect(im, w, hogCellSize, scales) ;
+            keep = boxsuppress(detections, scores, 0.25) ;
+            detections = detections(:, keep(1:10)) ;
+            scores = scores(keep(1:10)) ;
+            detecttest{i}=detections;
+            scorestest{i}=scores;
+            display(num2str(100*i/numel(test),'%.2f'));
+            count=i;
+             save('det.mat','scorestest','detecttest','count','-v7.3');
+        end
+    end
 end
 
 %%
@@ -184,18 +178,19 @@ end
 %Guardo Anotaciones en el formato especifico
 
 maxs=max(cell2mat(scorestest));
-if(exist('pred','dir')==0)
-mkdir('pred');
+dirpred='pred400';
+if(exist(dirpred,'dir')==0)
+mkdir(dirpred);
 end
 for i=1:numel(test)
     name=textscan(test{i},'%s', 'delimiter', '\');
     event=name{1}{3};
     name=name{1}{4};
     name=name(1:end-4);
-    if(exist(fullfile('pred',event),'dir')==0)
-        mkdir(fullfile('pred',event));
+    if(exist(fullfile(dirpred,event),'dir')==0)
+        mkdir(fullfile(dirpred,event));
     end
-    fid = fopen( strcat('pred\',event,'\',name,'.txt'), 'wt' );
+    fid = fopen( strcat(dirpred,'\',event,'\',name,'.txt'), 'wt' );
     fprintf( fid, '%s\n', name);
     
     nbox=numel(scorestest{i});
@@ -210,6 +205,7 @@ for i=1:numel(test)
         h=detj(4)-detj(2);
         fprintf( fid, '%i %i %i %i%6.2f\n', detj(1),detj(2),w,h,scorej);
     end
+    display(strcat(num2str(100*i/numel(test),'%6.2f\n'),'%'));
     fclose(fid);
 end
 
@@ -217,7 +213,7 @@ end
 
 % Plot detection
 
-i=79;
+i=10;
 im=imread(test{i});
 detections=detecttest{i};
 scores=scorestest{i};
