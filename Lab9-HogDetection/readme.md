@@ -29,6 +29,16 @@ As we work on a very small subset of the original dataset, the standard evaluati
 
 http://157.253.63.7/eval_tools_mod.tar.gz
 
+
+### Edit (24/04/17)
+The files in the above link contain the Train set and the **Test** set, the later does not contain labels and **won't work for the provided evaluation tool**. Instead download the actual validation data from:
+
+http://157.253.63.7/ValImagesLab9.zip
+
+Sorry for the inconvenience.
+
+
+
 After download, adapt the hardcoded paths you yout envirroment, they are easy to spot as they all begin with '/home/jcleon'
 
 To use the evaluation code your results must be in a specific format, the prediction for each image should be included in a file as follows :
@@ -75,4 +85,5 @@ Our good man waldo is hidden somewhere in the dataset, can you find him?. Tip us
 <img src="https://pbs.twimg.com/profile_images/561277979855056896/4yRcS2Zo.png" alt="Waldo" width="250" height="250">
 
 
-
+## Deadline
+**28 April** As usual upload your report on github
